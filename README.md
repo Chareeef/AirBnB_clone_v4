@@ -163,7 +163,7 @@ Second part of Airbnb: Joann Vuong
 
 Web dynamic by:
 Youssef Charif Hamidi - [Github](https://github.com/Chareeef/) / [LinkedIn](https://www.linkedin.com/in/youssef-charif-hamidi)
-Mohammed Lamine Boukhalfa - # to be updated 
+Mohammed Lamine Boukhalfa - [Github](https://github.com/tommy457) / [LinkedIn](https://www.linkedin.com/in/mohamed-lamine-boukhalfa-1285501bb)
 
 ## License
 Public Domain. No copy write protection. 
