@@ -21,17 +21,16 @@ def close_db(error):
 def hbnb():
     """ HBNB is alive! """
     states = storage.all(State).values()
-    states = sorted(states, key=lambda k: k.name)
-    st_ct = []
+    states = list(sorted(states, key=lambda state: state.name))
 
-    for state in states:
-        st_ct.append([state, sorted(state.cities, key=lambda k: k.name)])
+    for s in states:
+        s.cities = list(sorted(s.cities, key=lambda city: city.name))
 
     amenities = storage.all(Amenity).values()
     amenities = sorted(amenities, key=lambda k: k.name)
 
     return render_template('100-hbnb.html',
-                           states=st_ct,
+                           states=states,
                            amenities=amenities,
                            cache_id=uuid4())
 

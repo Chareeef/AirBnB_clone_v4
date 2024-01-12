@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8">
-    <title>HBnB</title>
+    <title>AirBnb Clone</title>
 
     <link rel="stylesheet" type="text/css" href="../static/styles/4-common.css?{{ cache_id }}">
     <link rel="stylesheet" type="text/css" href="../static/styles/3-header.css?{{ cache_id }}">
@@ -29,9 +29,9 @@
 	    <ul>
 	      {% for state in states %}
 	      <li>
-		<input type="checkbox" data-id="{{ state[0].id }}" data-name="{{ state[0].name }}" class="state-checkbox"><h2>{{ state[0].name }}:</h2>
+		<h2><input type="checkbox" data-id="{{ state.id }}" data-name="{{ state.name }}" class="state-checkbox">{{ state.name }}:</h2>
 		<ul>
-		  {% for city in state[1] %}
+		  {% for city in state.cities %}
 		  <li><input type="checkbox" data-id="{{ city.id }}" data-name="{{ city.name }}" class="city-checkbox">{{ city.name }}</li>
 		  {% endfor %}
 		</ul>
