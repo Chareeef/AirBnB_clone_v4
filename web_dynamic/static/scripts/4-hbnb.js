@@ -13,13 +13,21 @@ $(document).ready(function () {
   });
 
   $('#btn_search').on('click', function () {
+    $('section.places').html("");
     $.ajax('http://0.0.0.0:5001/api/v1/places_search', {
+
       data: JSON.stringify({
         amenities: checkedAmenitiesIds
       }),
       contentType: 'application/json',
       type: 'POST',
       success: function (data) {
+        console.log(data.length);
+
+        if (!data){
+          $('section.places').html("");
+        }
+
         for (const place of data) {
           const template = `<article>
             <div class="title_box">
