@@ -29,21 +29,55 @@ $(document).ready(function () {
       contentType: 'application/json',
       type: 'POST',
       success: function (data) {
+        $('section.places').html('');
         for (const place of data) {
-          const template = `<article>
+          let template = `<article>
             <div class="title_box">
               <h2>${place.name}</h2>
               <div class="price_by_night">$${place.price_by_night}</div>
             </div>
             <div class="information">
               <div class="max_guest">${place.max_guest} Guests</div>
-                    <div class="number_rooms">${place.number_rooms} Bedrooms</div>
-                    <div class="number_bathrooms">${place.number_bathrooms} Bathrooms</div>
+              <div class="number_rooms">${place.number_rooms} Bedrooms</div>
+              <div class="number_bathrooms">${place.number_bathrooms} Bathrooms</div>
             </div>
             <div class="description">
               ${place.description}
             </div>
-          </article>`;
+            <div class="reviews">
+            <h2>Reviews  <span class="show_reviews">Show</span></h2>
+
+            <ul class="hide_list">
+              <li>
+                <h3>From  user_id</h3>
+                <p> rev.test </p>
+              </li>
+            `;
+
+          function getRevs (place_id) {
+            console.log('getRevs');
+            var list = '';
+            $.getJSON(`http://0.0.0.0:5001/api/v1/places/${place_id}/reviews/`,  function (reviews) {
+              if (reviews) {
+                for (const rev of reviews) {
+                  console.log('in getJSON 6revs');
+                  list = list + `
+                    <li>
+                      <h3>From  ${rev.user_id}</h3>
+                      <p> ${rev.text} </p>
+                    </li>`;
+                  console.log(list);
+                }
+              }
+            });
+            console.log('revs:\n', list);
+            return (list);
+          }
+
+          template = template + `
+            </ul>
+            </div>
+            </article>`;
           $('section.places').append(template);
         }
       }
@@ -53,7 +87,6 @@ $(document).ready(function () {
   /* Make amenities filter dynamic */
 
   function fillHeader (header, checked) {
-    console.log(checked);
     checked = checked.filter((item) => item !== '');
     if (checked.length > 1) {
       let string = checked.join(', ');
@@ -89,7 +122,6 @@ $(document).ready(function () {
     const stateName = $(this).attr('data-name');
     const stateId = $(this).attr('data-id');
 
-    console.log(stateName, stateId);
     if ($(this).prop('checked')) {
       checkedStatesIds.push(stateId);
       checkedStates.push(stateName);
@@ -118,15 +150,15 @@ $(document).ready(function () {
 
   /* Hide/Show reviews */
 
-  $('.show_reviews').on('click', function () {
+  $('section.places').on('click', '.show_reviews', function () {
       console.log('click');
       const reviewsList = $(this).parent().parent().children('.hide_list');
-      console.log(reviewsList)
+      console.log(reviewsList.html())
       if ($(this).text() === 'Show') {
-        reviewsList.removeClass('hide_list');
+        reviewsList.css('display', 'block');
         $(this).text('Hide');
       } else {
-        reviewsList.addClass('hide_list');
+        reviewsList.css('display', 'none');
         $(this).text('Show');
       }
   });
