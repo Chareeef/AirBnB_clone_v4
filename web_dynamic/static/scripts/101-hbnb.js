@@ -44,38 +44,9 @@ $(document).ready(function () {
             <div class="description">
               ${place.description}
             </div>
-            <div class="reviews">
-            <h2>Reviews  <span class="show_reviews">Show</span></h2>
+            <div id="${place.id}" class="reviews">
+            <h2>Reviews  <span id="${place.id}" class="show_reviews">Show</span></h2>
 
-            <ul class="hide_list">
-              <li>
-                <h3>From  user_id</h3>
-                <p> rev.test </p>
-              </li>
-            `;
-
-          function getRevs (place_id) {
-            console.log('getRevs');
-            var list = '';
-            $.getJSON(`http://0.0.0.0:5001/api/v1/places/${place_id}/reviews/`,  function (reviews) {
-              if (reviews) {
-                for (const rev of reviews) {
-                  console.log('in getJSON 6revs');
-                  list = list + `
-                    <li>
-                      <h3>From  ${rev.user_id}</h3>
-                      <p> ${rev.text} </p>
-                    </li>`;
-                  console.log(list);
-                }
-              }
-            });
-            console.log('revs:\n', list);
-            return (list);
-          }
-
-          template = template + `
-            </ul>
             </div>
             </article>`;
           $('section.places').append(template);
@@ -152,13 +123,40 @@ $(document).ready(function () {
 
   $('section.places').on('click', '.show_reviews', function () {
       console.log('click');
-      const reviewsList = $(this).parent().parent().children('.hide_list');
-      console.log(reviewsList.html())
+
       if ($(this).text() === 'Show') {
-        reviewsList.css('display', 'block');
+
+        async function getRevs (place_id) {
+          console.log('getRevs');
+          const reviewsList = await $.ajax({
+                  url: `http://0.0.0.0:5001/api/v1/places/${place_id}/reviews/`,
+                  method: 'GET',
+                  dataType: 'json'
+                });
+          let list = `<ul id="${place_id}">`
+          if (reviewsList) {
+            for (const rev of reviewsList) {
+              console.log('in getJSON 6revs');
+              const user = await $.ajax({
+                      url: `http://0.0.0.0:5001/api/v1/users/${rev.user_id}/`,
+                      method: 'GET',
+                      dataType: 'json'
+                    });
+              list = list + `
+                <li>
+                  <h3>From  ${user.first_name}</h3>
+                  <p> ${rev.text} </p>
+                </li>`;
+            }
+          }
+          console.log(list);
+          $(`div.reviews#${place_id}`).append(list + '\n</ul>');
+        }
+
+        getRevs($(this).attr('id'));
         $(this).text('Hide');
       } else {
-        reviewsList.css('display', 'none');
+        $(`.reviews#${$(this).attr('id')} ul`).remove();
         $(this).text('Show');
       }
   });
